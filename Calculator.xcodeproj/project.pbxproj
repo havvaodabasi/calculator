@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4855F0512F0D185E00D0B36F /* CalculatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4855F0502F0D185000D0B36F /* CalculatorViewModel.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4855F0332F0D13B000D0B36F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		4855F0222F0D13AE00D0B36F /* Calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Calculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4855F0322F0D13B000D0B36F /* CalculatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4855F03C2F0D13B000D0B36F /* CalculatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4855F0502F0D185000D0B36F /* CalculatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		4855F0192F0D13AE00D0B36F = {
 			isa = PBXGroup;
 			children = (
+				4855F0502F0D185000D0B36F /* CalculatorViewModel.swift */,
 				4855F0242F0D13AE00D0B36F /* Calculator */,
 				4855F0352F0D13B000D0B36F /* CalculatorTests */,
 				4855F03F2F0D13B000D0B36F /* CalculatorUITests */,
@@ -236,6 +242,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4855F0512F0D185E00D0B36F /* CalculatorViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
