@@ -1,78 +1,152 @@
 import SwiftUI
 
-class CalculatorViewModel: ObservableObject {
+final class CalculatorViewModel: ObservableObject {
     @Published var display: String = "0"
-    
+
     private var storedValue: Double? = nil
     private var pendingOp: String? = nil
     private var isEnteringSecondNumber = false
-    
-    private func format(_ value: Double) -> String {
-        if value.truncatingRemainder(dividingBy: 1) == 0 {
-            return String(Int(value))
-        } else {
-            return String(value)
-        }
-    }
-    
+
+    private var lastOp: String? = nil
+    private var lastOperand: Double? = nil
+
+    private var isError = false
+
     func input(_ title: String) {
-        
-        if ["+", "−", "×", "÷"].contains(title) {
-            storedValue = Double(display)
-            pendingOp = title
-            isEnteringSecondNumber = true
-            return
-        }
-
-        if title == "=" {
-            guard let op = pendingOp,
-                  let first = storedValue,
-                  let second = Double(display) else { return }
-
-            let result: Double
-            switch op {
-            case "+": result = first + second
-            case "−": result = first - second
-            case "×": result = first * second
-            case "÷": result = first / second
-            default: return
-            }
-
-            display = format(result)
-            storedValue = nil
-            pendingOp = nil
-            isEnteringSecondNumber = false
+        if isError {
+            if title == "C" { clearAll() }
             return
         }
 
         if title == "C" {
-            display = "0"
-            storedValue = nil
-            pendingOp = nil
-            isEnteringSecondNumber = false
+            clearAll()
+            return
+        }
+
+        if ["+", "−", "×", "÷"].contains(title) {
+            handleOperator(title)
+            return
+        }
+
+        if title == "=" {
+            handleEquals()
             return
         }
 
         if title == "." {
-            if isEnteringSecondNumber {
-                display = "0"
-                isEnteringSecondNumber = false
-            }
+            beginSecondNumberIfNeeded(for: title)
             if display.contains(".") { return }
             display += "."
             return
         }
 
         if "0123456789".contains(title) {
-            if isEnteringSecondNumber {
-                display = "0"
-                isEnteringSecondNumber = false
-            }
+            beginSecondNumberIfNeeded(for: title)
             if display == "0" {
                 display = title
             } else {
                 display += title
             }
+        }
+    }
+
+    private func handleOperator(_ op: String) {
+        if pendingOp != nil, isEnteringSecondNumber {
+            pendingOp = op
+            return
+        }
+
+        if let existingOp = pendingOp, let first = storedValue, let second = Double(display) {
+            guard let result = compute(first: first, op: existingOp, second: second) else {
+                setError()
+                return
+            }
+            display = format(result)
+            storedValue = result
+        } else {
+            storedValue = Double(display)
+        }
+
+        pendingOp = op
+        isEnteringSecondNumber = true
+
+        lastOp = nil
+        lastOperand = nil
+    }
+
+    private func handleEquals() {
+        if pendingOp == nil {
+            guard let op = lastOp, let operand = lastOperand, let current = Double(display) else { return }
+            guard let result = compute(first: current, op: op, second: operand) else {
+                setError()
+                return
+            }
+            display = format(result)
+            return
+        }
+
+        guard let op = pendingOp, let first = storedValue, let second = Double(display) else { return }
+
+        guard let result = compute(first: first, op: op, second: second) else {
+            setError()
+            return
+        }
+
+        display = format(result)
+
+        lastOp = op
+        lastOperand = second
+
+        pendingOp = nil
+        storedValue = nil
+        isEnteringSecondNumber = false
+    }
+
+    private func beginSecondNumberIfNeeded(for title: String) {
+        if isEnteringSecondNumber {
+            display = "0"
+            isEnteringSecondNumber = false
+        }
+    }
+
+    private func compute(first: Double, op: String, second: Double) -> Double? {
+        switch op {
+        case "+": return first + second
+        case "−": return first - second
+        case "×": return first * second
+        case "÷":
+            if second == 0 { return nil }   // Error
+            return first / second
+        default:
+            return nil
+        }
+    }
+
+    private func setError() {
+        display = "Error"
+        isError = true
+        pendingOp = nil
+        storedValue = nil
+        isEnteringSecondNumber = false
+        lastOp = nil
+        lastOperand = nil
+    }
+
+    private func clearAll() {
+        display = "0"
+        storedValue = nil
+        pendingOp = nil
+        isEnteringSecondNumber = false
+        lastOp = nil
+        lastOperand = nil
+        isError = false
+    }
+
+    private func format(_ value: Double) -> String {
+        if value.truncatingRemainder(dividingBy: 1) == 0 {
+            return String(Int(value))
+        } else {
+            return String(value)
         }
     }
 }
