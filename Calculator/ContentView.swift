@@ -5,7 +5,6 @@ struct ContentView: View {
     @StateObject private var vm = CalculatorViewModel()
     
     func buttonTapped(_ title: String) {
-        print("tapped: \(title)")
         vm.input(title)
     }
     
@@ -21,14 +20,22 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            
-            Text(vm.display)
-                .font(.system(size: 50))
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .trailing
-                )
             Spacer()
+            
+            HStack(spacing: 8) {
+                Spacer()
+                
+                Text(vm.display)
+                    .font(.system(size: 50))
+                
+                Text(vm.activeOperator)
+                    .font(.system(size: 22))
+                    .padding(.top, 8)
+            }
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .padding(.bottom, 8)
+            .padding(.horizontal)
+            
             VStack(spacing: 12) {
                 HStack(spacing:12) {
                     calcButton("7")
@@ -56,8 +63,10 @@ struct ContentView: View {
                 }
             }
             .padding(.horizontal)
+            .padding(.bottom, 8)
         }
-        .padding(.vertical)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        .padding(.top, 24)
     }
 }
 

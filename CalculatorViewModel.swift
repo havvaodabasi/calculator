@@ -2,6 +2,7 @@ import SwiftUI
 
 final class CalculatorViewModel: ObservableObject {
     @Published var display: String = "0"
+    @Published var activeOperator: String = ""
 
     private var storedValue: Double? = nil
     private var pendingOp: String? = nil
@@ -68,6 +69,7 @@ final class CalculatorViewModel: ObservableObject {
         }
 
         pendingOp = op
+        activeOperator = op
         isEnteringSecondNumber = true
 
         lastOp = nil
@@ -93,6 +95,7 @@ final class CalculatorViewModel: ObservableObject {
         }
 
         display = format(result)
+        activeOperator = ""
 
         lastOp = op
         lastOperand = second
@@ -106,6 +109,7 @@ final class CalculatorViewModel: ObservableObject {
         if isEnteringSecondNumber {
             display = "0"
             isEnteringSecondNumber = false
+            activeOperator = ""
         }
     }
 
@@ -130,6 +134,7 @@ final class CalculatorViewModel: ObservableObject {
         isEnteringSecondNumber = false
         lastOp = nil
         lastOperand = nil
+        activeOperator = ""
     }
 
     private func clearAll() {
@@ -140,6 +145,7 @@ final class CalculatorViewModel: ObservableObject {
         lastOp = nil
         lastOperand = nil
         isError = false
+        activeOperator = ""
     }
 
     private func format(_ value: Double) -> String {
