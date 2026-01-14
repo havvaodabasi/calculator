@@ -23,6 +23,16 @@ final class CalculatorViewModel: ObservableObject {
             clearAll()
             return
         }
+        
+        if title == "±" {
+            toggleSign()
+            return
+        }
+
+        if title == "%" {
+            applyPercent()
+            return
+        }
 
         if ["+", "−", "×", "÷"].contains(title) {
             handleOperator(title)
@@ -54,6 +64,7 @@ final class CalculatorViewModel: ObservableObject {
     private func handleOperator(_ op: String) {
         if pendingOp != nil, isEnteringSecondNumber {
             pendingOp = op
+            activeOperator = op
             return
         }
 
@@ -78,18 +89,30 @@ final class CalculatorViewModel: ObservableObject {
 
     private func handleEquals() {
         if pendingOp == nil {
-            guard let op = lastOp, let operand = lastOperand, let current = Double(display) else { return }
-            guard let result = compute(first: current, op: op, second: operand) else {
-                setError()
-                return
-            }
+            guard let op = lastOp,
+            let operand = lastOperand,
+            let current = Double(display)
+        else {
+            return
+        }
+        guard let result = compute(first: current, op: op, second: operand)
+        else {
+            setError()
+            return
+        }
             display = format(result)
             return
         }
 
-        guard let op = pendingOp, let first = storedValue, let second = Double(display) else { return }
+        guard let op = pendingOp,
+        let first = storedValue,
+        let second = Double(display)
+        else {
+            return
+        }
 
-        guard let result = compute(first: first, op: op, second: second) else {
+        guard let result = compute(first: first, op: op, second: second)
+        else {
             setError()
             return
         }
@@ -124,6 +147,17 @@ final class CalculatorViewModel: ObservableObject {
         default:
             return nil
         }
+    }
+    
+    private func toggleSign() {
+        guard let value = Double(display) else { return }
+        let newValue = -value
+        display = format(newValue)
+    }
+
+    private func applyPercent() {
+        guard let value = Double(display) else { return }
+        display = format(value / 100.0)
     }
 
     private func setError() {
