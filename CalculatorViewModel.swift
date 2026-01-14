@@ -149,10 +149,16 @@ final class CalculatorViewModel: ObservableObject {
     }
 
     private func format(_ value: Double) -> String {
+        if value.isNaN || value.isInfinite { return "Error" }
+
         if value.truncatingRemainder(dividingBy: 1) == 0 {
-            return String(Int(value))
-        } else {
-            return String(value)
-        }
+            if value <= Double(Int.max) && value >= Double(Int.min) {
+                return String(Int(value))
+            } else {
+                return String(format: "%.0e", value)
+            }
+           } else {
+               return String(format: "%.12g", value)
+           }
     }
 }

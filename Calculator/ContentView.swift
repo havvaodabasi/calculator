@@ -8,66 +8,82 @@ struct ContentView: View {
         vm.input(title)
     }
     
-    func calcButton(_ title: String) -> some View {
+    func calcButton(_ title: String, size: CGFloat) -> some View {
         Button(action: { buttonTapped(title) }) {
             Text(title)
-                .frame(width: 80, height: 80)
+                .frame(width: size, height: size)
                 .contentShape(Rectangle())
                 .background(Color(.systemGray5))
-                .cornerRadius(12)
+                .cornerRadius(size * 0.18)
         }
+        
     }
     
     var body: some View {
-        VStack {
-            Spacer()
+        GeometryReader { geo in
+            let spacing: CGFloat = 12
+            let horizontalPadding: CGFloat = 16
             
-            HStack(spacing: 8) {
+            let availableWidth = geo.size.width - (horizontalPadding * 2) - (spacing * 3)
+            let buttonSize = floor(availableWidth / 4)
+            
+            VStack {
                 Spacer()
                 
-                Text(vm.display)
-                    .font(.system(size: 50))
+                HStack(spacing: 8) {
+                    Spacer()
+                    
+                    Text(vm.display)
+                        .font(.system(size: min(geo.size.width * 0.18, 64), weight: .regular, design: .default))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .truncationMode(.head)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.bottom, 8)
+                        .padding(.horizontal, horizontalPadding)
+                    
+                    Text(vm.activeOperator)
+                        .font(.system(size: 22))
+                        .padding(.top, 8)
+                }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.bottom, 8)
+                .padding(.horizontal)
                 
-                Text(vm.activeOperator)
-                    .font(.system(size: 22))
-                    .padding(.top, 8)
+                VStack(spacing: 12) {
+                    HStack(spacing:12) {
+                        calcButton("7", size: buttonSize)
+                        calcButton("8", size: buttonSize)
+                        calcButton("9", size: buttonSize)
+                        calcButton("÷", size: buttonSize)
+                    }
+                    HStack(spacing: 12) {
+                        calcButton("4", size: buttonSize)
+                        calcButton("5", size: buttonSize)
+                        calcButton("6", size: buttonSize)
+                        calcButton("×", size: buttonSize)
+                    }
+                    HStack(spacing: 12) {
+                        calcButton("1", size: buttonSize)
+                        calcButton("2", size: buttonSize)
+                        calcButton("3", size: buttonSize)
+                        calcButton("−", size: buttonSize)
+                    }
+                    HStack(spacing: 12) {
+                        calcButton("C", size: buttonSize)
+                        calcButton("0", size: buttonSize)
+                        calcButton("=", size: buttonSize)
+                        calcButton("+", size: buttonSize)
+                    }
+                }
+                .padding(.horizontal, horizontalPadding)
+                .padding(.bottom, max(geo.safeAreaInsets.bottom, 8))
             }
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            .padding(.bottom, 8)
-            .padding(.horizontal)
-            
-            VStack(spacing: 12) {
-                HStack(spacing:12) {
-                    calcButton("7")
-                    calcButton("8")
-                    calcButton("9")
-                    calcButton("÷")
-                }
-                HStack(spacing: 12) {
-                    calcButton("4")
-                    calcButton("5")
-                    calcButton("6")
-                    calcButton("×")
-                }
-                HStack(spacing: 12) {
-                    calcButton("1")
-                    calcButton("2")
-                    calcButton("3")
-                    calcButton("−")
-                }
-                HStack(spacing: 12) {
-                    calcButton("C")
-                    calcButton("0")
-                    calcButton("=")
-                    calcButton("+")
-                }
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 8)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            .padding(.top, 24)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        .padding(.top, 24)
-    }
+            
+        }
 }
 
 #Preview {
