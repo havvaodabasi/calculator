@@ -4,6 +4,36 @@ struct ContentView: View {
     
     @StateObject private var vm = CalculatorViewModel()
     
+    let utilityButtonColor = Color(
+        red: 217 / 255,
+        green: 217 / 255,
+        blue: 223 / 255
+    )
+    
+    let numberButtonColor = Color(
+        red: 255 / 255,
+        green: 255 / 255,
+        blue: 254 / 255
+    )
+    
+    let operatorButtonColor = Color(
+        red: 98 / 255,
+        green: 53 / 255,
+        blue: 243 / 255
+    )
+    
+    let displayTextColor = Color(
+        red: 251 / 255,
+        green: 250 / 255,
+        blue: 251 / 255
+    )
+    
+    let displayOperatorColor = Color(
+        red: 86 / 255,
+        green: 48 / 255,
+        blue: 210 / 255
+    )
+    
     func buttonTapped(_ title: String) {
         if title == "," {
             vm.input(".")
@@ -17,7 +47,18 @@ struct ContentView: View {
             Text(title)
                 .frame(width: width, height: height)
                 .contentShape(Rectangle())
-                .background(Color(.systemGray5))
+                .background(
+                    ["0","1","2","3","4","5","6","7","8","9",".",","].contains(title)
+                    ? numberButtonColor
+                    : ["C", "%", "±"].contains(title)
+                        ? utilityButtonColor
+                        : operatorButtonColor
+                )
+                .foregroundColor(
+                    ["+", "−", "×", "÷", "="].contains(title)
+                    ? .white
+                    : .black
+                )
                 .cornerRadius(12)
         }
     }
@@ -46,10 +87,12 @@ struct ContentView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .truncationMode(.head)
+                        .foregroundColor(displayTextColor)
 
                     Text(vm.activeOperator)
                         .font(.system(size: 22))
                         .padding(.top, 8)
+                        .foregroundColor(displayOperatorColor)
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.bottom, 8)
@@ -93,6 +136,14 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             .padding(.top, 24)
         }
+        .background(
+            Color(red: 12 / 255,
+                  green: 2 / 255,
+                  blue: 49 / 255
+            )
+            .opacity(0.95)
+            .ignoresSafeArea()
+        )
             
         }
 }
